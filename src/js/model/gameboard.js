@@ -1,1 +1,3 @@
-export class Gameboard {}
+export default class Gameboard {
+  constructor() {}
+}
