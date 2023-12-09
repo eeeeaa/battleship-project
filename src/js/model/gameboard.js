@@ -131,11 +131,11 @@ export default class Gameboard {
     for (let entity of this.#ships) {
       if (entity.shipId === this.#board[pos.y][pos.x]) {
         entity.ship.hit();
-        this.#setDataInBoard(-1, pos.x, pos.y);
-        return true;
       }
     }
-    return false;
+
+    this.#setDataInBoard(-1, pos.x, pos.y);
+    return true;
   };
 }
 
