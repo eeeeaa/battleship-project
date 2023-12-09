@@ -48,22 +48,10 @@ export default class Gameboard {
     this.#ships.push(new ShipEntity(ship, shipId));
   };
 
-  #isValidMove = (pos) => {
-    if (pos.x < 0 || pos.x > this.size - 1) {
-      return false;
-    } else;
-    if (pos.y < 0 || pos.y > this.size - 1) {
-      return false;
-    } else;
-    if (this.#board[pos.y][pos.x] === -1) {
-      return false;
-    }
-    return true;
-  };
   #placeShipHorizontal = (ship, startPos) => {
     const id = this.#getUniqueShipId();
     if (
-      this.#isValidMove({ x: startPos.x + (ship.length - 1), y: startPos.y })
+      this.isValidMove({ x: startPos.x + (ship.length - 1), y: startPos.y })
     ) {
       for (let i = startPos.x; i <= startPos.x + (ship.length - 1); i++) {
         this.#setDataInBoard(id, i, startPos.y);
@@ -76,7 +64,7 @@ export default class Gameboard {
   #placeShipVertical = (ship, startPos) => {
     const id = this.#getUniqueShipId();
     if (
-      this.#isValidMove({ x: startPos.x, y: startPos.y + (ship.length - 1) })
+      this.isValidMove({ x: startPos.x, y: startPos.y + (ship.length - 1) })
     ) {
       for (let j = startPos.y; j <= startPos.y + (ship.length - 1); j++) {
         this.#setDataInBoard(id, startPos.x, j);
@@ -90,6 +78,31 @@ export default class Gameboard {
   getBoard = () => this.#board.slice();
 
   getShips = () => this.#ships.slice();
+
+  printBoard = () => {
+    let boardString = "";
+    for (let i = 0; i < this.size; i++) {
+      let row = "";
+      for (let j = 0; j < this.size; j++) {
+        row += this.#board[i][j] + " ";
+      }
+      boardString += `${row}\n`;
+    }
+    console.log(boardString);
+  };
+
+  isValidMove = (pos) => {
+    if (pos.x < 0 || pos.x > this.size - 1) {
+      return false;
+    } else;
+    if (pos.y < 0 || pos.y > this.size - 1) {
+      return false;
+    } else;
+    if (this.#board[pos.y][pos.x] === -1) {
+      return false;
+    }
+    return true;
+  };
 
   placeShip = (ship, startPos, isVertical) => {
     return isVertical
@@ -110,7 +123,7 @@ export default class Gameboard {
     if (
       this.#board[pos.y][pos.x] === 0 ||
       this.#board[pos.y][pos.x] === -1 ||
-      !this.#isValidMove(pos)
+      !this.isValidMove(pos)
     ) {
       return false;
     }

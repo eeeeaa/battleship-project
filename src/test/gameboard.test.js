@@ -146,3 +146,27 @@ describe("gameboard should report its own ships status", () => {
     ]);
   });
 });
+
+test("gameboard should be able to determine valid move", () => {
+  const board = new Gameboard(8);
+  const ship = new Ship(3);
+  const ship2 = new Ship(3);
+  const ship3 = new Ship(3);
+
+  board.placeShip(ship, { x: 2, y: 0 }, false);
+  board.placeShip(ship2, { x: 2, y: 1 }, false);
+  board.placeShip(ship3, { x: 2, y: 2 }, false);
+
+  board.receiveAttack({ x: 2, y: 0 });
+
+  expect(board.isValidMove({ x: 8, y: 4 })).toBeFalsy();
+  expect(board.isValidMove({ x: 4, y: 8 })).toBeFalsy();
+  expect(board.isValidMove({ x: -5, y: 4 })).toBeFalsy();
+  expect(board.isValidMove({ x: 4, y: -5 })).toBeFalsy();
+  expect(board.isValidMove({ x: -4, y: -5 })).toBeFalsy();
+
+  expect(board.isValidMove({ x: 2, y: 0 })).toBeFalsy();
+
+  expect(board.isValidMove({ x: 2, y: 1 })).toBeTruthy();
+  expect(board.isValidMove({ x: 4, y: 5 })).toBeTruthy();
+});
