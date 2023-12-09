@@ -120,17 +120,15 @@ export default class Gameboard {
   };
 
   receiveAttack = (pos) => {
-    if (
-      this.#board[pos.y][pos.x] === 0 ||
-      this.#board[pos.y][pos.x] === -1 ||
-      !this.isValidMove(pos)
-    ) {
+    if (!this.isValidMove(pos)) {
       return false;
     }
 
-    for (let entity of this.#ships) {
-      if (entity.shipId === this.#board[pos.y][pos.x]) {
-        entity.ship.hit();
+    if (this.#board[pos.y][pos.x] != 0) {
+      for (let entity of this.#ships) {
+        if (entity.shipId === this.#board[pos.y][pos.x]) {
+          entity.ship.hit();
+        }
       }
     }
 
