@@ -6,14 +6,39 @@
  * ai logic as well
  *
  */
+
+import Gameboard from "./gameboard";
+import Ship from "./ship";
+
 export default class Player {
-  constructor(name, board, isComputer = false) {
+  #size;
+  constructor(name, size, isComputer = false) {
     this.name = name;
-    this.board = board;
+    this.#size = size;
+    this.board = new Gameboard(size);
     if (isComputer) {
       this.computer = new ComputerComponent();
     }
   }
+
+  addRandomShips = (shipCount) => {
+    for (let i = 0; i < shipCount; i++) {
+      const ship = new Ship(Math.round(Math.random() * (this.#size - 1) + 1));
+      let move = {
+        x: Math.round(Math.random() * (this.#size - 1)),
+        y: Math.round(Math.random() * (this.#size - 1)),
+      };
+      let placeship = this.board.placeShip(ship, move, Math.random() < 0.5);
+      while (!placeship) {
+        move = {
+          x: Math.round(Math.random() * (this.#size - 1)),
+          y: Math.round(Math.random() * (this.#size - 1)),
+        };
+
+        placeship = this.board.placeShip(ship, move, Math.random() < 0.5);
+      }
+    }
+  };
 }
 
 class ComputerComponent {
