@@ -79,6 +79,11 @@ export default class Gameboard {
 
   getShips = () => this.#ships.slice();
 
+  getDataAt = (pos) => {
+    if (!this.isValidMove(pos)) return null;
+    return this.#board[pos.y][pos.x];
+  };
+
   printBoard = () => {
     let boardString = "";
     for (let i = 0; i < this.size; i++) {
@@ -128,6 +133,8 @@ export default class Gameboard {
       for (let entity of this.#ships) {
         if (entity.shipId === this.#board[pos.y][pos.x]) {
           entity.ship.hit();
+          this.#setDataInBoard(-1, pos.x, pos.y);
+          return entity.ship;
         }
       }
     }

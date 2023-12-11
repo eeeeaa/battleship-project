@@ -103,7 +103,7 @@ test("gameboard should be able to receive attack coordinate and call hit on ship
 
   board.placeShip(ship, { x: 2, y: 0 }, false);
 
-  expect(board.receiveAttack({ x: 2, y: 0 })).toBeTruthy();
+  expect(board.receiveAttack({ x: 2, y: 0 })).toBeInstanceOf(Ship);
   expect(board.getBoard()[0][2]).toBe(-1);
 
   expect(board.receiveAttack({ x: 4, y: 5 })).toBeTruthy();
@@ -154,26 +154,37 @@ describe("gameboard should report its own ships status", () => {
   });
 });
 
-test("gameboard should be able to determine valid move", () => {
-  const board = new Gameboard(8);
-  const ship = new Ship(3);
-  const ship2 = new Ship(3);
-  const ship3 = new Ship(3);
+describe("gameboard should be able to check and return individual pieces of the board", () => {
+  test("gameboard should be able to returns value at specified coordinate", () => {
+    const board = new Gameboard(8);
+    const ship = new Ship(3);
+    board.placeShip(ship, { x: 2, y: 0 }, false);
 
-  board.placeShip(ship, { x: 2, y: 0 }, false);
-  board.placeShip(ship2, { x: 2, y: 1 }, false);
-  board.placeShip(ship3, { x: 2, y: 2 }, false);
+    expect(board.getDataAt({ x: 2, y: 0 })).toBe(1);
+    expect(board.getDataAt({ x: 3, y: 5 })).toBe(0);
+    expect(board.getDataAt({ x: 9, y: 8 })).toBeNull();
+  });
+  test("gameboard should be able to determine valid move", () => {
+    const board = new Gameboard(8);
+    const ship = new Ship(3);
+    const ship2 = new Ship(3);
+    const ship3 = new Ship(3);
 
-  board.receiveAttack({ x: 2, y: 0 });
+    board.placeShip(ship, { x: 2, y: 0 }, false);
+    board.placeShip(ship2, { x: 2, y: 1 }, false);
+    board.placeShip(ship3, { x: 2, y: 2 }, false);
 
-  expect(board.isValidMove({ x: 8, y: 4 })).toBeFalsy();
-  expect(board.isValidMove({ x: 4, y: 8 })).toBeFalsy();
-  expect(board.isValidMove({ x: -5, y: 4 })).toBeFalsy();
-  expect(board.isValidMove({ x: 4, y: -5 })).toBeFalsy();
-  expect(board.isValidMove({ x: -4, y: -5 })).toBeFalsy();
+    board.receiveAttack({ x: 2, y: 0 });
 
-  expect(board.isValidMove({ x: 2, y: 0 })).toBeFalsy();
+    expect(board.isValidMove({ x: 8, y: 4 })).toBeFalsy();
+    expect(board.isValidMove({ x: 4, y: 8 })).toBeFalsy();
+    expect(board.isValidMove({ x: -5, y: 4 })).toBeFalsy();
+    expect(board.isValidMove({ x: 4, y: -5 })).toBeFalsy();
+    expect(board.isValidMove({ x: -4, y: -5 })).toBeFalsy();
 
-  expect(board.isValidMove({ x: 2, y: 1 })).toBeTruthy();
-  expect(board.isValidMove({ x: 4, y: 5 })).toBeTruthy();
+    expect(board.isValidMove({ x: 2, y: 0 })).toBeFalsy();
+
+    expect(board.isValidMove({ x: 2, y: 1 })).toBeTruthy();
+    expect(board.isValidMove({ x: 4, y: 5 })).toBeTruthy();
+  });
 });
