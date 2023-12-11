@@ -15,17 +15,27 @@
 export default class Gameboard {
   #board = [];
   #ships = [];
-  #currentId = 1;
 
   constructor(size) {
     this.size = size;
     this.#board = this.#createBoard(size);
   }
 
+  #checkIfUnique = (id) => {
+    for (let ship of this.#ships) {
+      if (ship.shipId === id) {
+        return false;
+      }
+    }
+    return true;
+  };
+
   #getUniqueShipId = () => {
-    const oldId = this.#currentId;
-    this.#currentId = this.#currentId + 1;
-    return oldId;
+    const id = Math.round(Math.random() * 999);
+    while (!this.#checkIfUnique(id)) {
+      id = Math.round(Math.random() * 999);
+    }
+    return id;
   };
 
   #createBoard = (sizeVal) => {
@@ -50,29 +60,30 @@ export default class Gameboard {
 
   #placeShipHorizontal = (ship, startPos) => {
     const id = this.#getUniqueShipId();
-    if (
-      this.isValidMove({ x: startPos.x + (ship.length - 1), y: startPos.y })
-    ) {
-      for (let i = startPos.x; i <= startPos.x + (ship.length - 1); i++) {
-        this.#setDataInBoard(id, i, startPos.y);
+    for (let i = startPos.x; i <= startPos.x + (ship.length - 1); i++) {
+      if (!this.isValidMove({ x: i, y: startPos.y }, true)) {
+        return false;
       }
-      this.#addShips(ship, id);
-      return true;
     }
-    return false;
+    for (let i = startPos.x; i <= startPos.x + (ship.length - 1); i++) {
+      this.#setDataInBoard(id, i, startPos.y);
+    }
+
+    this.#addShips(ship, id);
+    return true;
   };
   #placeShipVertical = (ship, startPos) => {
     const id = this.#getUniqueShipId();
-    if (
-      this.isValidMove({ x: startPos.x, y: startPos.y + (ship.length - 1) })
-    ) {
-      for (let j = startPos.y; j <= startPos.y + (ship.length - 1); j++) {
-        this.#setDataInBoard(id, startPos.x, j);
+    for (let j = startPos.y; j <= startPos.y + (ship.length - 1); j++) {
+      if (!this.isValidMove({ x: startPos.x, y: j }, true)) {
+        return false;
       }
-      this.#addShips(ship, id);
-      return true;
     }
-    return false;
+    for (let j = startPos.y; j <= startPos.y + (ship.length - 1); j++) {
+      this.#setDataInBoard(id, startPos.x, j);
+    }
+    this.#addShips(ship, id);
+    return true;
   };
 
   getBoard = () => this.#board.slice();
@@ -100,7 +111,7 @@ export default class Gameboard {
     console.log(this.getString());
   };
 
-  isValidMove = (pos) => {
+  isValidMove = (pos, checkForShip = false) => {
     if (pos.x < 0 || pos.x > this.size - 1) {
       return false;
     } else;
@@ -109,6 +120,9 @@ export default class Gameboard {
     } else;
     if (this.#board[pos.y][pos.x] === -1) {
       return false;
+    }
+    if (checkForShip) {
+      if (this.#board[pos.y][pos.x] >= 1) return false;
     }
     return true;
   };

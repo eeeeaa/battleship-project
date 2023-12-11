@@ -23,12 +23,30 @@ describe("gameboard placing ship test cases", () => {
     expect(board.placeShip(ship, { x: 2, y: 0 }, false)).toBeTruthy();
     expect(board.placeShip(ship, { x: 2, y: 1 }, false)).toBeTruthy();
 
-    expect(board.getShips()[0].shipId).toBe(1);
-    expect(board.getShips()[1].shipId).toBe(2);
+    expect(board.getShips()[0].shipId).toEqual(expect.any(Number));
+    expect(board.getShips()[1].shipId).toEqual(expect.any(Number));
 
     expect(board.getBoard()).toStrictEqual([
-      [0, 0, 1, 1, 1, 0, 0, 0],
-      [0, 0, 2, 2, 2, 0, 0, 0],
+      [
+        0,
+        0,
+        expect.any(Number),
+        expect.any(Number),
+        expect.any(Number),
+        0,
+        0,
+        0,
+      ],
+      [
+        0,
+        0,
+        expect.any(Number),
+        expect.any(Number),
+        expect.any(Number),
+        0,
+        0,
+        0,
+      ],
       [0, 0, 0, 0, 0, 0, 0, 0],
       [0, 0, 0, 0, 0, 0, 0, 0],
       [0, 0, 0, 0, 0, 0, 0, 0],
@@ -63,13 +81,13 @@ describe("gameboard placing ship test cases", () => {
     expect(board.placeShip(ship, { x: 2, y: 0 }, true)).toBeTruthy();
     expect(board.placeShip(ship, { x: 3, y: 0 }, true)).toBeTruthy();
 
-    expect(board.getShips()[0].shipId).toBe(1);
-    expect(board.getShips()[1].shipId).toBe(2);
+    expect(board.getShips()[0].shipId).toEqual(expect.any(Number));
+    expect(board.getShips()[1].shipId).toEqual(expect.any(Number));
 
     expect(board.getBoard()).toStrictEqual([
-      [0, 0, 1, 2, 0, 0, 0, 0],
-      [0, 0, 1, 2, 0, 0, 0, 0],
-      [0, 0, 1, 2, 0, 0, 0, 0],
+      [0, 0, expect.any(Number), expect.any(Number), 0, 0, 0, 0],
+      [0, 0, expect.any(Number), expect.any(Number), 0, 0, 0, 0],
+      [0, 0, expect.any(Number), expect.any(Number), 0, 0, 0, 0],
       [0, 0, 0, 0, 0, 0, 0, 0],
       [0, 0, 0, 0, 0, 0, 0, 0],
       [0, 0, 0, 0, 0, 0, 0, 0],
@@ -160,7 +178,7 @@ describe("gameboard should be able to check and return individual pieces of the 
     const ship = new Ship(3);
     board.placeShip(ship, { x: 2, y: 0 }, false);
 
-    expect(board.getDataAt({ x: 2, y: 0 })).toBe(1);
+    expect(board.getDataAt({ x: 2, y: 0 })).toEqual(expect.any(Number));
     expect(board.getDataAt({ x: 3, y: 5 })).toBe(0);
     expect(board.getDataAt({ x: 9, y: 8 })).toBeNull();
   });
@@ -185,6 +203,8 @@ describe("gameboard should be able to check and return individual pieces of the 
     expect(board.isValidMove({ x: 2, y: 0 })).toBeFalsy();
 
     expect(board.isValidMove({ x: 2, y: 1 })).toBeTruthy();
+    expect(board.isValidMove({ x: 2, y: 1 }, true)).toBeFalsy();
+
     expect(board.isValidMove({ x: 4, y: 5 })).toBeTruthy();
   });
 });
