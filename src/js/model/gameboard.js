@@ -84,7 +84,7 @@ export default class Gameboard {
     return this.#board[pos.y][pos.x];
   };
 
-  printBoard = () => {
+  getString = () => {
     let boardString = "";
     for (let i = 0; i < this.size; i++) {
       let row = "";
@@ -93,7 +93,11 @@ export default class Gameboard {
       }
       boardString += `${row}\n`;
     }
-    console.log(boardString);
+    return boardString;
+  };
+
+  printBoard = () => {
+    console.log(this.getString());
   };
 
   isValidMove = (pos) => {

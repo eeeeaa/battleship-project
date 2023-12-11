@@ -11,7 +11,7 @@ export default class Ship {
   getHitCount = () => this.#hitCount;
 
   hit = () => {
-    this.#hitCount++;
+    this.#hitCount = this.#hitCount + 1;
   };
 
   isSunk = () => {
