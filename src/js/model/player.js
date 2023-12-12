@@ -24,8 +24,11 @@ export default class Player {
   addRandomShips = (maxShipCount) => {
     const realCount =
       maxShipCount > this.#size - 1 ? this.#size - 1 : maxShipCount;
+    const realSizeLimit = this.#size > 8 ? 8 : this.#size;
     for (let i = 0; i < realCount; i++) {
-      const ship = new Ship(Math.round(Math.random() * (this.#size - 1) + 1));
+      const ship = new Ship(
+        Math.round(Math.random() * (realSizeLimit - 1) + 1)
+      );
       let move = {
         x: Math.round(Math.random() * (this.#size - 1)),
         y: Math.round(Math.random() * (this.#size - 1)),
