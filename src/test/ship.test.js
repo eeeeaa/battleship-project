@@ -1,5 +1,4 @@
-import { Ship } from "../js/model/ship";
-
+import Ship from "../js/model/ship";
 test("should returns hit count", () => {
   const ship = new Ship(3);
   expect(ship.getHitCount()).toBe(0);

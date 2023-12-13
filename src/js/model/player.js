@@ -99,6 +99,8 @@ class ComputerComponent {
 
     if (typeof board.receiveAttack(move) === "object") {
       this.#previousMove = move;
+    } else {
+      this.#previousMove = null;
     }
     return true;
   };

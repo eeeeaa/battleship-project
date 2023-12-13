@@ -6,6 +6,7 @@
  *      - 0 means empty space
  *      - more than 1 means spaced occupied by ship (the number being ship id)
  *      - -1 means already hit space
+ *      - -2 means hit a ship
  * - to track which ship is where
  *      - an array of object containing ship itself and its id
  *      - when receive attack, call hit on ship with the id
@@ -118,7 +119,7 @@ export default class Gameboard {
     if (pos.y < 0 || pos.y > this.size - 1) {
       return false;
     } else;
-    if (this.#board[pos.y][pos.x] === -1) {
+    if (this.#board[pos.y][pos.x] <= -1) {
       return false;
     }
     if (checkForShip) {
@@ -151,7 +152,7 @@ export default class Gameboard {
       for (let entity of this.#ships) {
         if (entity.shipId === this.#board[pos.y][pos.x]) {
           entity.ship.hit();
-          this.#setDataInBoard(-1, pos.x, pos.y);
+          this.#setDataInBoard(-2, pos.x, pos.y);
           return entity.ship;
         }
       }

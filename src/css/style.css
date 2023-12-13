@@ -22,7 +22,7 @@ body {
 
 #main-content .game-space {
   height: 600px;
-  width: 530px;
+  width: 600px;
   border: 1px solid black;
   border-radius: 1em;
 
@@ -41,9 +41,15 @@ body {
   gap: 2em;
 }
 
-#main-content .game-space .board-list .game-board {
-  height: 250px;
-  width: 250px;
+.game-board {
+  display: grid;
+  align-items: center;
+  justify-items: center;
+  padding: 0.5em;
+  border: 1px solid black;
+}
+.game-board .board-cell {
+  display: inline-block;
   border: 1px solid black;
 }
 

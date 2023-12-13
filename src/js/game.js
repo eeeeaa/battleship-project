@@ -26,7 +26,9 @@ export default class Game {
     }
   };
 
-  #getNextPlayer = () => this.#players[this.#turnComponent.peekNextTurn()];
+  getPlayers = () => this.#players;
+
+  getNextPlayer = () => this.#players[this.#turnComponent.peekNextTurn()];
 
   getCurrentPlayer = () => this.#players[this.#turnComponent.getCurrentTurn()];
 
@@ -37,11 +39,11 @@ export default class Game {
   playGame = (pos = null) => {
     if (this.getCurrentPlayer().computer != null) {
       this.getCurrentPlayer().computer.performAutomateAttack(
-        this.#getNextPlayer()
+        this.getNextPlayer()
       );
     } else {
       if (pos == null) throw new Error(`no move chosen for human player!`);
-      this.#getNextPlayer().board.receiveAttack(pos);
+      this.getNextPlayer().board.receiveAttack(pos);
     }
     this.#advanceGame();
   };

@@ -122,7 +122,7 @@ test("gameboard should be able to receive attack coordinate and call hit on ship
   board.placeShip(ship, { x: 2, y: 0 }, false);
 
   expect(board.receiveAttack({ x: 2, y: 0 })).toBeInstanceOf(Ship);
-  expect(board.getBoard()[0][2]).toBe(-1);
+  expect(board.getBoard()[0][2]).toBe(-2);
 
   expect(board.receiveAttack({ x: 4, y: 5 })).toBeTruthy();
   expect(board.getBoard()[5][4]).toBe(-1);
@@ -160,9 +160,9 @@ describe("gameboard should report its own ships status", () => {
     expect(board.hasAllShipSunk()).toBeTruthy();
 
     expect(board.getBoard()).toStrictEqual([
-      [0, 0, -1, -1, -1, 0, 0, 0],
-      [0, 0, -1, -1, -1, 0, 0, 0],
-      [0, 0, -1, -1, -1, 0, 0, 0],
+      [0, 0, -2, -2, -2, 0, 0, 0],
+      [0, 0, -2, -2, -2, 0, 0, 0],
+      [0, 0, -2, -2, -2, 0, 0, 0],
       [0, 0, 0, 0, 0, 0, 0, 0],
       [0, 0, 0, 0, 0, 0, 0, 0],
       [0, 0, 0, 0, 0, 0, 0, 0],
