@@ -92,7 +92,12 @@ export default class Gameboard {
   getShips = () => this.#ships.slice();
 
   getDataAt = (pos) => {
-    if (!this.isValidMove(pos)) return null;
+    if (pos.x < 0 || pos.x > this.size - 1) {
+      return null;
+    }
+    if (pos.y < 0 || pos.y > this.size - 1) {
+      return null;
+    }
     return this.#board[pos.y][pos.x];
   };
 

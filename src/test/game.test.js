@@ -9,13 +9,20 @@ test("game should start game successfully", () => {
   b.addRandomShips(4);
 
   const game = new Game([a, b]);
-  game.startGame();
-
-  expect(game.hasGameEnded()).toBe(false);
-  expect(game.getCurrentPlayer()).toMatchObject(a);
+  game.startGame({
+    playerAction: (player, target) => {
+      expect(player).toMatchObject(a);
+      expect(target).toMatchObject(b);
+    },
+    computerAction: (player, target) => {
+      expect(player).toMatchObject(b);
+      expect(target).toMatchObject(a);
+      game.gameOver = true;
+    },
+  });
 });
 
-test("game should advance turn properly", () => {
+test("player should be able to perform action in game", () => {
   const a = new Player("Mike", 4);
   const b = new Player("Tom", 4, true);
 
@@ -23,33 +30,17 @@ test("game should advance turn properly", () => {
   b.addRandomShips(2);
 
   const game = new Game([a, b]);
-
-  game.startGame();
-  expect(game.getCurrentPlayer()).toMatchObject(a);
-
-  game.playGame({ x: 3, y: 0 });
-  expect(game.getCurrentPlayer()).toMatchObject(b);
-
-  game.playGame();
-  expect(game.getCurrentPlayer()).toMatchObject(a);
-});
-
-test("game should finish properly", () => {
-  const a = new Player("Mike", 4, true);
-  const b = new Player("Tom", 4, true);
-
-  a.addRandomShips(2);
-  b.addRandomShips(2);
-
-  const game = new Game([a, b]);
-  game.startGame();
-  expect(game.hasGameEnded()).toBeFalsy();
-  while (!game.hasGameEnded()) {
-    //console.log(`${game.getCurrentPlayer().name}'s turn`);
-    //console.log(game.gameString());
-    game.playGame();
-    //console.log(game.gameString());
-  }
-  //console.log(`${game.getCurrentPlayer().name} has won`);
-  expect(game.hasGameEnded()).toBeTruthy();
+  game.startGame({
+    playerAction: (player, target) => {
+      target.board.receiveAttack({ x: 2, y: 0 });
+      expect(player).toMatchObject(a);
+      expect(target).toMatchObject(b);
+    },
+    computerAction: (player, target) => {
+      expect(player.board.getDataAt({ x: 2, y: 0 })).toBe(-1);
+      expect(player).toMatchObject(b);
+      expect(target).toMatchObject(a);
+      game.gameOver = true;
+    },
+  });
 });

@@ -1,30 +1,37 @@
 import "../css/style.css";
-import { mapGameUiElement, updatePlayerBoard } from "./mapper/uiMapper";
+import {
+  updatePlayerBoard,
+  mapPlayerBoardToGridElement,
+} from "./mapper/uiMapper";
 import Player from "./model/player";
 import Game from "./game";
 
-gameLoop();
+//gameLoop();
 
 function gameLoop() {
+  const boardList = document.querySelector(".board-list");
   const test = new Player("tom", 10, true);
   const test2 = new Player("jerry", 10, true);
   test.addRandomShips(10);
   test2.addRandomShips(10);
 
   const game = new Game([test, test2]);
-  game.startGame();
-  mapGameUiElement(game);
-
-  const interval = setInterval(() => {
-    updatePlayerBoard(game.getCurrentPlayer());
-    updatePlayerBoard(game.getNextPlayer());
-    game.playGame();
-    updatePlayerBoard(game.getCurrentPlayer());
-    updatePlayerBoard(game.getNextPlayer());
-
-    if (game.hasGameEnded()) {
+  game.startGame({
+    preAction: (players) => {
+      for (let player of players) {
+        boardList.append(mapPlayerBoardToGridElement(player));
+      }
+    },
+    playerAction: (player, target) => {
+      //TODO
+    },
+    computerAction: (player, target) => {
+      player.computer.performAutomateAttack(target);
+      updatePlayerBoard(target);
+    },
+    postAction: (players) => {
       console.log("game ended");
-      clearInterval(interval);
-    }
-  }, 300);
+    },
+    delay: 300,
+  });
 }

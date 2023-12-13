@@ -1,93 +1,53 @@
 export default class Game {
-  #hasGameEnd = false;
-  #turnComponent;
-  #players;
+  #turnQueue = [];
   constructor(players) {
-    if (players.length > 2)
-      throw new Error("more than two player not supported!");
-    this.#players = players;
-    this.#turnComponent = new TurnComponent();
+    this.#turnQueue = [...players];
+    this.gameOver = false;
   }
 
-  #playerLose = () => {
-    for (let player of this.#players) {
-      if (player.board.hasAllShipSunk()) {
-        return true;
+  #advanceTurn = () => {
+    if (this.#turnQueue[0].board.hasAllShipSunk()) {
+      this.gameOver = true;
+      return;
+    }
+    const temp = this.#turnQueue[0];
+    this.#turnQueue.shift();
+    this.#turnQueue.push(temp);
+  };
+
+  #delay = (delay) => {
+    return new Promise((resolve) => {
+      setTimeout(() => resolve(), delay);
+    });
+  };
+
+  async startGame({
+    preAction = null,
+    playerAction,
+    computerAction,
+    postAction = null,
+    delay = null,
+  }) {
+    if (preAction != null) preAction(this.#turnQueue);
+    while (!this.gameOver) {
+      if (this.#turnQueue[0].computer != null) {
+        this.computerTurnAction(computerAction);
+      } else {
+        this.playerTurnAction(playerAction);
+      }
+      this.#advanceTurn();
+      if (delay != null) {
+        await this.#delay(delay);
       }
     }
-    return false;
-  };
-
-  #advanceGame = () => {
-    if (this.#playerLose()) {
-      this.#hasGameEnd = true;
-    } else {
-      this.#turnComponent.advanceTurn();
-    }
-  };
-
-  getPlayers = () => this.#players;
-
-  getNextPlayer = () => this.#players[this.#turnComponent.peekNextTurn()];
-
-  getCurrentPlayer = () => this.#players[this.#turnComponent.getCurrentTurn()];
-
-  startGame = () => {
-    this.#hasGameEnd = false;
-  };
-
-  playGame = (pos = null) => {
-    if (this.getCurrentPlayer().computer != null) {
-      this.getCurrentPlayer().computer.performAutomateAttack(
-        this.getNextPlayer()
-      );
-    } else {
-      if (pos == null) throw new Error(`no move chosen for human player!`);
-      this.getNextPlayer().board.receiveAttack(pos);
-    }
-    this.#advanceGame();
-  };
-
-  gameString = () => {
-    let boardString = "";
-
-    boardString += `------------------------\n`;
-
-    for (let player of this.#players) {
-      boardString += player.name + "\n";
-      boardString += player.board.getString();
-    }
-
-    boardString += `------------------------\n`;
-
-    return boardString;
-  };
-
-  hasGameEnded = () => {
-    if (this.#hasGameEnd) {
-      return true;
-    }
-    return false;
-  };
-}
-
-class TurnComponent {
-  #currentTurn;
-  constructor() {
-    this.#currentTurn = 0;
+    if (postAction != null) postAction(this.#turnQueue);
   }
 
-  #randomizeTurn = () => {
-    this.#currentTurn = Math.random() < 0.5 ? 1 : 0;
+  playerTurnAction = (callback) => {
+    callback(this.#turnQueue[0], this.#turnQueue[1]);
   };
 
-  getCurrentTurn = () => this.#currentTurn;
-
-  peekNextTurn = () => {
-    return (this.#currentTurn + 1) % 2;
-  };
-
-  advanceTurn = () => {
-    this.#currentTurn = (this.#currentTurn + 1) % 2;
+  computerTurnAction = (callback) => {
+    callback(this.#turnQueue[0], this.#turnQueue[1]);
   };
 }

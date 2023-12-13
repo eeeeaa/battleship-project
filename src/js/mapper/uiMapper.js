@@ -2,33 +2,14 @@ import Gameboard from "../model/gameboard";
 import Player from "../model/player";
 import Ship from "../model/ship";
 
-export function mapGameUiElement(game) {
-  const boardList = document.querySelector(".board-list");
-  for (let player of game.getPlayers()) {
-    boardList.append(mapPlayerBoardToGridElement(player));
-  }
-}
-
-export function updatePlayerBoard(player) {
+export function updatePlayerBoard(player, hideBoard = true) {
   const board = document.querySelector(
     `.game-board[data-player-name="${player.name}"`
   );
-  board.replaceWith(mapPlayerBoardToGridElement(player));
+  board.replaceWith(mapPlayerBoardToGridElement(player, hideBoard));
 }
 
-function setupCellListener(player) {
-  const cells = Array.from(
-    document.querySelector(
-      `.game-board[data-player-name="${player.name} .board-cell"`
-    )
-  );
-
-  for (let cell of cells) {
-    cell.addEventListener("click", (e) => {});
-  }
-}
-
-function mapPlayerBoardToGridElement(player) {
+export function mapPlayerBoardToGridElement(player, hideBoard = true) {
   const array = player.board.getBoard();
 
   const boardElement = document.createElement("div");
@@ -43,7 +24,7 @@ function mapPlayerBoardToGridElement(player) {
 
   for (let i = 0; i < player.board.size; i++) {
     for (let j = 0; j < player.board.size; j++) {
-      let cell = mapToCellElement(array[i][j], j, i);
+      let cell = mapToCellElement(array[i][j], j, i, hideBoard);
 
       boardElement.append(cell);
     }
@@ -52,7 +33,7 @@ function mapPlayerBoardToGridElement(player) {
   return boardElement;
 }
 
-function mapToCellElement(value, x, y) {
+function mapToCellElement(value, x, y, hideBoard) {
   let cell = document.createElement("div");
   cell.style.display = "inline-block";
 
@@ -65,7 +46,7 @@ function mapToCellElement(value, x, y) {
 
   cell.classList.toggle("board-cell");
 
-  if (value >= 1) {
+  if (value >= 1 && hideBoard === false) {
     cell.style.backgroundColor = "black";
   } else if (value === -1) {
     cell.style.backgroundColor = "red";
