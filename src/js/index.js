@@ -4,7 +4,7 @@ import {
   mapPlayerBoard,
   mapPlayerInformation,
   handlePlayerAction,
-  updateBoardState,
+  toggleBoardOverlay,
 } from "./mapper/uiMapper";
 import Player from "./model/player";
 import Game from "./game";
@@ -24,9 +24,9 @@ function gameLoop() {
         mapPlayerBoard(player);
         mapPlayerInformation(player);
       }
+      toggleBoardOverlay(players[0]);
     },
     playerAction: (player, target, endTurn) => {
-      console.log("player turn");
       handlePlayerAction(target, (cell) => {
         if (game.gameOver) {
           game.postGameAction((players, winner) => {
@@ -42,20 +42,31 @@ function gameLoop() {
 
         const result = target.board.receiveAttack({ x, y });
 
+        if (result === false) {
+          return;
+        }
+
         if (typeof result === "object") {
           game.comboFlag = true;
         }
         updatePlayerBoard(target);
+        if (game.comboFlag === false) {
+          toggleBoardOverlay(player);
+          toggleBoardOverlay(target);
+        }
         endTurn();
       });
     },
     computerAction: (player, target, endTurn) => {
-      console.log("computer turn");
       const result = player.computer.performAutomateAttack(target);
       if (typeof result === "object") {
         game.comboFlag = true;
       }
       updatePlayerBoard(target);
+      if (game.comboFlag === false) {
+        toggleBoardOverlay(player);
+        toggleBoardOverlay(target);
+      }
       endTurn();
     },
     postAction: (players, winner) => {

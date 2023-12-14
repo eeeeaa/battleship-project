@@ -10,15 +10,16 @@ export function updatePlayerBoard(player) {
   board.replaceWith(mapPlayerBoardToGridElement(player, hideBoard));
 }
 
-export function updateBoardState(player, target) {
+export function toggleBoardOverlay(player) {
   const playerOverlay = document.querySelector(
     `.game-board[data-player-name="${player.name}"] .board-lock`
   );
-  playerOverlay.style.display = "block";
-  const targetOverlay = document.querySelector(
-    `.game-board[data-player-name="${target.name}"] .board-lock`
-  );
-  targetOverlay.style.display = "none";
+
+  if (playerOverlay.style.display === "block") {
+    playerOverlay.style.display = "none";
+  } else {
+    playerOverlay.style.display = "block";
+  }
 }
 
 export function mapPlayerInformation(player) {
@@ -56,15 +57,16 @@ function mapPlayerBoardToGridElement(player, hideBoard) {
   boardElement.setAttribute("data-player-name", player.name);
   boardElement.classList.toggle("game-board");
 
-  //const overlay = document.createElement("div");
-  //overlay.classList.toggle("board-lock");
+  const overlay = document.createElement("div");
+  overlay.classList.toggle("board-lock");
+  overlay.style.display = "none";
 
-  //boardElement.append(overlay);
+  boardElement.append(overlay);
 
   if (player.computer != null) {
-    boardElement.style.backgroundColor = "purple";
+    boardElement.style.backgroundColor = "#312e81";
   } else {
-    boardElement.style.backgroundColor = "green";
+    boardElement.style.backgroundColor = "#15803d";
   }
   boardElement.style.gridTemplate = `repeat(${player.board.size},1fr) / repeat(${player.board.size},1fr)`;
 
@@ -92,13 +94,13 @@ function mapToCellElement(value, x, y, hideBoard) {
   cell.classList.toggle("board-cell");
 
   if (value >= 1 && hideBoard === false) {
-    cell.style.backgroundColor = "black";
+    cell.style.backgroundColor = "#3f3f46";
   } else if (value === -1) {
-    cell.style.backgroundColor = "red";
+    cell.style.backgroundColor = "#dc2626";
   } else if (value < -1) {
-    cell.style.backgroundColor = "green";
+    cell.style.backgroundColor = "#22c55e";
   } else {
-    cell.style.backgroundColor = "white";
+    cell.style.backgroundColor = "#164e63";
   }
   return cell;
 }
