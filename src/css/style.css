@@ -42,12 +42,24 @@ body {
 }
 
 .game-board {
+  position: relative;
   display: grid;
   align-items: center;
   justify-items: center;
   padding: 0.5em;
   border: 1px solid black;
 }
+
+.board-lock {
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 10;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(128, 128, 128, 0.75);
+}
+
 .game-board .board-cell {
   display: inline-block;
   border: 1px solid black;
@@ -58,6 +70,21 @@ body {
   border-radius: 0 1em 1em 0;
   border: 1px solid black;
   background-color: black;
+}
+
+.game-information .player-name-list {
+  padding: 1em;
+  display: flex;
+  flex-direction: column;
+  gap: 1em;
+
+  .player-name {
+    display: flex;
+    text-align: center;
+    padding: 0.5em;
+    color: white;
+    font-weight: 700;
+  }
 }
 
 @media screen and (min-width: 700px) {

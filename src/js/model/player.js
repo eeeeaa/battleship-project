@@ -97,11 +97,12 @@ class ComputerComponent {
       loopCount++;
     }
 
-    if (typeof board.receiveAttack(move) === "object") {
+    const result = board.receiveAttack(move);
+    if (typeof result === "object") {
       this.#previousMove = move;
     } else {
       this.#previousMove = null;
     }
-    return true;
+    return result;
   };
 }

@@ -1,13 +1,21 @@
 export default class Game {
   #turnQueue = [];
+  #winner = null;
   constructor(players) {
     this.#turnQueue = [...players];
     this.gameOver = false;
+    this.comboFlag = false;
   }
 
-  #advanceTurn = () => {
+  advanceTurn = () => {
     if (this.#turnQueue[0].board.hasAllShipSunk()) {
       this.gameOver = true;
+      this.#winner = this.#turnQueue[1];
+      return;
+    }
+    if (this.comboFlag) {
+      console.log("combo");
+      this.comboFlag = false;
       return;
     }
     const temp = this.#turnQueue[0];
@@ -15,7 +23,7 @@ export default class Game {
     this.#turnQueue.push(temp);
   };
 
-  #delay = (delay) => {
+  delay = (delay) => {
     return new Promise((resolve) => {
       setTimeout(() => resolve(), delay);
     });
@@ -28,26 +36,34 @@ export default class Game {
     postAction = null,
     delay = null,
   }) {
-    if (preAction != null) preAction(this.#turnQueue);
+    if (preAction != null) this.preGameAction(preAction);
     while (!this.gameOver) {
       if (this.#turnQueue[0].computer != null) {
-        this.computerTurnAction(computerAction);
+        if (delay != null) {
+          await this.delay(delay);
+        }
+        await this.turnAction(computerAction);
       } else {
-        this.playerTurnAction(playerAction);
-      }
-      this.#advanceTurn();
-      if (delay != null) {
-        await this.#delay(delay);
+        await this.turnAction(playerAction);
       }
     }
-    if (postAction != null) postAction(this.#turnQueue);
+    if (postAction != null) this.postGameAction(postAction);
   }
 
-  playerTurnAction = (callback) => {
-    callback(this.#turnQueue[0], this.#turnQueue[1]);
+  preGameAction = (callback) => {
+    callback(this.#turnQueue);
   };
 
-  computerTurnAction = (callback) => {
-    callback(this.#turnQueue[0], this.#turnQueue[1]);
+  postGameAction = (callback) => {
+    callback(this.#turnQueue, this.#winner);
+  };
+
+  turnAction = (callback) => {
+    return new Promise((resolve, reject) => {
+      callback(this.#turnQueue[0], this.#turnQueue[1], () => {
+        this.advanceTurn();
+        resolve();
+      });
+    });
   };
 }
