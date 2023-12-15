@@ -20,7 +20,7 @@ function gameLoop() {
 
   const game = new Game([test, test2]);
   game.startGame({
-    preAction: (players) => {
+    preAction: (players, finish) => {
       for (let player of players) {
         mapPlayerBoard(player);
         mapPlayerInformation(player);
@@ -29,6 +29,7 @@ function gameLoop() {
       }
       toggleBoardOverlay(players[0]);
       pushToEventLog(`game has started!`);
+      finish();
     },
     playerAction: (player, target, endTurn) => {
       handlePlayerAction(target, (cell) => {
@@ -85,11 +86,12 @@ function gameLoop() {
       }
       endTurn();
     },
-    postAction: (players, winner) => {
+    postAction: (players, winner, finish) => {
       for (let player of players) {
         updatePlayerBoard(player, false);
       }
       pushToEventLog(`game ended, ${winner.name} has won!`);
+      finish();
     },
     delay: 1000,
   });

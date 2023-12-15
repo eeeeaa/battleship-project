@@ -31,7 +31,7 @@ export default class Game {
     postAction = null,
     delay = null,
   }) {
-    if (preAction != null) this.preGameAction(preAction);
+    if (preAction != null) await this.preGameAction(preAction);
     while (!this.gameOver) {
       if (this.#turnQueue[0].computer != null) {
         if (delay != null) {
@@ -42,15 +42,23 @@ export default class Game {
         await this.turnAction(playerAction);
       }
     }
-    if (postAction != null) this.postGameAction(postAction);
+    if (postAction != null) await this.postGameAction(postAction);
   }
 
   preGameAction = (callback) => {
-    callback(this.#turnQueue);
+    return new Promise((resolve, reject) => {
+      callback(this.#turnQueue, () => {
+        resolve();
+      });
+    });
   };
 
   postGameAction = (callback) => {
-    callback(this.#turnQueue, this.#winner);
+    return new Promise((resolve, reject) => {
+      callback(this.#turnQueue, this.#winner, () => {
+        resolve();
+      });
+    });
   };
 
   turnAction = (callback) => {

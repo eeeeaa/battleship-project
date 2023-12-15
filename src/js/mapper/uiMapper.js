@@ -81,12 +81,16 @@ function mapToCellElement(value, x, y, hideBoard) {
   cell.classList.toggle("board-cell");
 
   if (value >= 1 && hideBoard === false) {
-    cell.style.backgroundColor = "#3f3f46";
+    //ship
+    cell.style.backgroundColor = "#94a3b8";
   } else if (value === -1) {
+    //missed
     cell.style.backgroundColor = "#dc2626";
   } else if (value < -1) {
+    //hit ship
     cell.style.backgroundColor = "#22c55e";
   } else {
+    //empty space
     cell.style.backgroundColor = "#164e63";
   }
   return cell;
