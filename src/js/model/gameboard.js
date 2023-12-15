@@ -32,7 +32,7 @@ export default class Gameboard {
   };
 
   #getUniqueShipId = () => {
-    const id = Math.round(Math.random() * 999);
+    let id = Math.round(Math.random() * 999);
     while (!this.#checkIfUnique(id)) {
       id = Math.round(Math.random() * 999);
     }
