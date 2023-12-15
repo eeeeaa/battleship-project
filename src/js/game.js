@@ -1,3 +1,4 @@
+import { delayWrapper } from "./util/util";
 export default class Game {
   #turnQueue = [];
   #winner = null;
@@ -23,12 +24,6 @@ export default class Game {
     this.#turnQueue.push(temp);
   };
 
-  delay = (delay) => {
-    return new Promise((resolve) => {
-      setTimeout(() => resolve(), delay);
-    });
-  };
-
   async startGame({
     preAction = null,
     playerAction,
@@ -40,7 +35,7 @@ export default class Game {
     while (!this.gameOver) {
       if (this.#turnQueue[0].computer != null) {
         if (delay != null) {
-          await this.delay(delay);
+          await delayWrapper(delay);
         }
         await this.turnAction(computerAction);
       } else {

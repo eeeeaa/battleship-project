@@ -25,8 +25,9 @@ export function toggleBoardOverlay(player) {
 export function mapPlayerInformation(player) {
   const nameList = document.querySelector(".player-name-list");
   const playerName = document.createElement("div");
+  let playerType = player.computer != null ? "CPU" : "Player";
   playerName.classList.toggle("player-name");
-  playerName.textContent = player.name;
+  playerName.textContent = `${player.name} (${playerType})`;
   nameList.append(playerName);
 }
 
@@ -34,20 +35,6 @@ export function mapPlayerBoard(player) {
   const boardList = document.querySelector(".board-list");
   const hideBoard = player.computer != null ? true : false;
   boardList.append(mapPlayerBoardToGridElement(player, hideBoard));
-}
-
-export function handlePlayerAction(target, action) {
-  const cells = Array.from(
-    document.querySelectorAll(
-      `.game-board[data-player-name="${target.name}"] .board-cell`
-    )
-  );
-
-  for (let cell of cells) {
-    cell.addEventListener("click", (e) => {
-      action(cell);
-    });
-  }
 }
 
 function mapPlayerBoardToGridElement(player, hideBoard) {

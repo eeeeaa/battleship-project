@@ -3,9 +3,10 @@ import {
   updatePlayerBoard,
   mapPlayerBoard,
   mapPlayerInformation,
-  handlePlayerAction,
   toggleBoardOverlay,
 } from "./mapper/uiMapper";
+import { pushToEventLog } from "./handler/notificationHandler";
+import { handlePlayerAction } from "./handler/playerActionHandler";
 import Player from "./model/player";
 import Game from "./game";
 
@@ -23,8 +24,11 @@ function gameLoop() {
       for (let player of players) {
         mapPlayerBoard(player);
         mapPlayerInformation(player);
+        let playerType = player.computer != null ? "CPU" : "Player";
+        pushToEventLog(`${player.name} enter the game as ${playerType}`);
       }
       toggleBoardOverlay(players[0]);
+      pushToEventLog(`game has started!`);
     },
     playerAction: (player, target, endTurn) => {
       handlePlayerAction(target, (cell) => {
@@ -48,7 +52,13 @@ function gameLoop() {
 
         if (typeof result === "object") {
           game.comboFlag = true;
+          pushToEventLog(`${player.name} hit ${target.name}'s ship!`);
         }
+
+        if (result === true) {
+          pushToEventLog(`${player.name} missed!`);
+        }
+
         updatePlayerBoard(target);
         if (game.comboFlag === false) {
           toggleBoardOverlay(player);
@@ -61,7 +71,13 @@ function gameLoop() {
       const result = player.computer.performAutomateAttack(target);
       if (typeof result === "object") {
         game.comboFlag = true;
+        pushToEventLog(`${player.name} hit ${target.name}'s ship!`);
       }
+
+      if (result === true) {
+        pushToEventLog(`${player.name} missed!`);
+      }
+
       updatePlayerBoard(target);
       if (game.comboFlag === false) {
         toggleBoardOverlay(player);
@@ -73,7 +89,7 @@ function gameLoop() {
       for (let player of players) {
         updatePlayerBoard(player, false);
       }
-      console.log(`game ended, ${winner.name} has won!`);
+      pushToEventLog(`game ended, ${winner.name} has won!`);
     },
     delay: 1000,
   });
