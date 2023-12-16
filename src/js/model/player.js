@@ -21,25 +21,50 @@ export default class Player {
     }
   }
 
+  #getRandomValidPosition = () => {
+    let move = {
+      x: Math.round(Math.random() * (this.#size - 1)),
+      y: Math.round(Math.random() * (this.#size - 1)),
+    };
+    while (!this.board.isValidMove(move, true)) {
+      move = {
+        x: Math.round(Math.random() * (this.#size - 1)),
+        y: Math.round(Math.random() * (this.#size - 1)),
+      };
+    }
+
+    return move;
+  };
+
+  #getAdjecentPositionStatus = (move, shipLength, isVertical) => {
+    //TODO use ship length and verticality to check if good place to place ship
+    return [
+      this.board.isValidMove({ x: move.x + 1, y: move.y }, true),
+      this.board.isValidMove({ x: move.x - 1, y: move.y }, true),
+      this.board.isValidMove({ x: move.x, y: move.y + 1 }, true),
+      this.board.isValidMove({ x: move.x, y: move.y - 1 }, true),
+    ];
+  };
+
   addRandomShips = (maxShipCount) => {
     const realCount =
-      maxShipCount > this.#size - 1 ? this.#size - 1 : maxShipCount;
-    const realSizeLimit = this.#size > 8 ? 8 : this.#size;
+      maxShipCount > Math.pow(this.#size, 2) - 1
+        ? Math.pow(this.#size, 2) - 1
+        : maxShipCount;
+    const realSizeLimit = this.#size > 5 ? 5 : this.#size;
     for (let i = 0; i < realCount; i++) {
       const ship = new Ship(
         Math.round(Math.random() * (realSizeLimit - 1) + 1)
       );
-      let move = {
-        x: Math.round(Math.random() * (this.#size - 1)),
-        y: Math.round(Math.random() * (this.#size - 1)),
-      };
-      while (!this.board.isValidMove(move, true)) {
-        move = {
-          x: Math.round(Math.random() * (this.#size - 1)),
-          y: Math.round(Math.random() * (this.#size - 1)),
-        };
-      }
       let isVertical = Math.random() < 0.5;
+      let move = this.#getRandomValidPosition();
+      let adjecentTilesCheck = this.#getAdjecentPositionStatus(move);
+
+      while (adjecentTilesCheck.filter((value) => value).length < 2) {
+        move = this.#getRandomValidPosition();
+        adjecentTilesCheck = this.#getAdjecentPositionStatus(move);
+      }
+
       this.board.placeShip(ship, move, isVertical);
     }
   };
