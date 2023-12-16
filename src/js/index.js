@@ -15,14 +15,14 @@ gameLoop();
 function gameLoop() {
   const test = new Player("tom", 10);
   const test2 = new Player("jerry", 10, true);
-  test.addRandomShips(10);
-  test2.addRandomShips(10);
+  test.addRandomShips(25);
+  test2.addRandomShips(25);
 
   const game = new Game([test, test2]);
   game.startGame({
     preAction: (players, finish) => {
       for (let player of players) {
-        mapPlayerBoard(player);
+        mapPlayerBoard(player, game.isPvP);
         mapPlayerInformation(player);
         let playerType = player.computer != null ? "CPU" : "Player";
         pushToEventLog(`${player.name} enter the game as ${playerType}`);
@@ -36,7 +36,7 @@ function gameLoop() {
         if (game.gameOver) {
           game.postGameAction((players, winner) => {
             for (let player of players) {
-              updatePlayerBoard(player, false);
+              updatePlayerBoard(player, game.isPvP);
             }
             console.log(`game ended, ${winner.name} has won!`);
           });
@@ -60,7 +60,7 @@ function gameLoop() {
           pushToEventLog(`${player.name} missed!`);
         }
 
-        updatePlayerBoard(target);
+        updatePlayerBoard(target, game.isPvP);
         if (game.comboFlag === false) {
           toggleBoardOverlay(player);
           toggleBoardOverlay(target);
@@ -79,7 +79,7 @@ function gameLoop() {
         pushToEventLog(`${player.name} missed!`);
       }
 
-      updatePlayerBoard(target);
+      updatePlayerBoard(target, game.isPvP);
       if (game.comboFlag === false) {
         toggleBoardOverlay(player);
         toggleBoardOverlay(target);
@@ -88,7 +88,7 @@ function gameLoop() {
     },
     postAction: (players, winner, finish) => {
       for (let player of players) {
-        updatePlayerBoard(player, false);
+        updatePlayerBoard(player, game.isPvP);
       }
       pushToEventLog(`game ended, ${winner.name} has won!`);
       finish();

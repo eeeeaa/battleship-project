@@ -3,17 +3,34 @@ export default class Game {
   #turnQueue = [];
   #winner = null;
   constructor(players) {
+    if (players.length > 2) throw new Error("more than 2 player not support!");
     this.#turnQueue = [...players];
     this.gameOver = false;
     this.comboFlag = false;
+    this.isPvP = this.#checkIfPvP();
   }
 
-  advanceTurn = () => {
-    if (this.#turnQueue[0].board.hasAllShipSunk()) {
-      this.gameOver = true;
-      this.#winner = this.#turnQueue[1];
-      return;
+  #checkIfPvP = () => {
+    for (let player of this.#turnQueue) {
+      if (player.computer != null) {
+        return false;
+      }
     }
+    return true;
+  };
+
+  shouldEndGame = () => {
+    if (this.#turnQueue[1].board.hasAllShipSunk()) {
+      this.gameOver = true;
+      this.#winner = this.#turnQueue[0];
+      return true;
+    } else {
+      return false;
+    }
+  };
+
+  advanceTurn = () => {
+    if (this.shouldEndGame()) return;
     if (this.comboFlag) {
       console.log("combo");
       this.comboFlag = false;

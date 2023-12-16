@@ -2,12 +2,13 @@ import Gameboard from "../model/gameboard";
 import Player from "../model/player";
 import Ship from "../model/ship";
 
-export function updatePlayerBoard(player) {
+export function updatePlayerBoard(player, isPvP) {
   const board = document.querySelector(
     `.game-board[data-player-name="${player.name}"]`
   );
   const hideBoard = player.computer != null ? true : false;
-  board.replaceWith(mapPlayerBoardToGridElement(player, hideBoard));
+  const shouldHideBoard = isPvP || hideBoard;
+  board.replaceWith(mapPlayerBoardToGridElement(player, shouldHideBoard));
 }
 
 export function toggleBoardOverlay(player) {
@@ -31,10 +32,11 @@ export function mapPlayerInformation(player) {
   nameList.append(playerName);
 }
 
-export function mapPlayerBoard(player) {
+export function mapPlayerBoard(player, isPvP) {
   const boardList = document.querySelector(".board-list");
   const hideBoard = player.computer != null ? true : false;
-  boardList.append(mapPlayerBoardToGridElement(player, hideBoard));
+  const shouldHideBoard = isPvP || hideBoard;
+  boardList.append(mapPlayerBoardToGridElement(player, shouldHideBoard));
 }
 
 function mapPlayerBoardToGridElement(player, hideBoard) {
