@@ -1,16 +1,3 @@
-import Gameboard from "../model/gameboard";
-import Player from "../model/player";
-import Ship from "../model/ship";
-
-export function updatePlayerBoard(player, isPvP) {
-  const board = document.querySelector(
-    `.game-board[data-player-name="${player.name}"]`
-  );
-  const hideBoard = player.computer != null ? true : false;
-  const shouldHideBoard = isPvP || hideBoard;
-  board.replaceWith(mapPlayerBoardToGridElement(player, shouldHideBoard));
-}
-
 export function toggleBoardOverlay(player) {
   const playerOverlay = document.querySelector(
     `.game-board[data-player-name="${player.name}"] .board-lock`
@@ -23,23 +10,21 @@ export function toggleBoardOverlay(player) {
   }
 }
 
-export function mapPlayerInformation(player) {
-  const nameList = document.querySelector(".player-name-list");
-  const playerName = document.createElement("div");
-  let playerType = player.computer != null ? "CPU" : "Player";
-  playerName.classList.toggle("player-name");
-  playerName.textContent = `${player.name} (${playerType})`;
-  nameList.append(playerName);
-}
-
 export function mapPlayerBoard(player, isPvP) {
   const boardList = document.querySelector(".board-list");
   const hideBoard = player.computer != null ? true : false;
   const shouldHideBoard = isPvP || hideBoard;
-  boardList.append(mapPlayerBoardToGridElement(player, shouldHideBoard));
+
+  const boardLabel = document.createElement("div");
+  boardLabel.classList.toggle("board-label");
+  boardLabel.textContent = player.getFormatName();
+  boardList.append(
+    boardLabel,
+    mapPlayerBoardToGridElement(player, shouldHideBoard)
+  );
 }
 
-function mapPlayerBoardToGridElement(player, hideBoard) {
+export function mapPlayerBoardToGridElement(player, hideBoard) {
   const array = player.board.getBoard();
 
   const boardElement = document.createElement("div");

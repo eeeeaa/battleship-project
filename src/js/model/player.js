@@ -46,6 +46,12 @@ export default class Player {
     ];
   };
 
+  getFormatName = (length = 10) => {
+    return this.name.length > length
+      ? `${this.name.slice(0, length - 4)}...`
+      : this.name;
+  };
+
   addRandomShips = (maxShipCount) => {
     const realCount =
       maxShipCount > Math.pow(this.#size, 2) - 1
