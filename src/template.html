@@ -11,6 +11,37 @@
         <div class="board-list"></div>
         <div class="game-information">
           <div class="player-name-list"></div>
+          <div class="game-form-container">
+            <form action="" method="post" class="game-form">
+              <label for="first-player">First player:</label>
+              <input type="text" name="first-player" id="first-player" />
+              <label for="second-player">Second player:</label>
+              <input type="text" name="second-player" id="second-player" />
+              <fieldset>
+                <legend>Game type:</legend>
+                <div>
+                  <input
+                    type="radio"
+                    id="PvC"
+                    name="gameType"
+                    value="PvC"
+                    checked
+                  />
+                  <label for="PvC">Player VS CPU</label>
+                </div>
+
+                <div>
+                  <input type="radio" id="PvP" name="gameType" value="PvP" />
+                  <label for="PvP">Player VS Player</label>
+                </div>
+
+                <div>
+                  <input type="radio" id="CvC" name="gameType" value="CvC" />
+                  <label for="CvC">CPU VS CPU</label>
+                </div>
+              </fieldset>
+            </form>
+          </div>
           <div class="button-list">
             <button class="start-game-button">Start game</button>
           </div>

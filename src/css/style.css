@@ -98,6 +98,30 @@ body {
   }
 }
 
+.game-information .game-form-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.game-information .game-form-container .game-form {
+  display: flex;
+  gap: 0.1em;
+  flex-direction: column;
+  align-items: center;
+  padding: 1em;
+  max-width: 70%;
+}
+
+#first-player,
+#second-player {
+  appearance: none;
+  background-color: #1e293b;
+  border-radius: 0.5em;
+  padding: 0.2em 0.3em;
+  max-width: 150px;
+}
+
 .game-information .button-list {
   align-self: center;
   display: flex;

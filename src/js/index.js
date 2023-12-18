@@ -2,23 +2,56 @@ import "../css/style.css";
 import { mapPlayerBoard, toggleBoardOverlay } from "./mapper/boardMapper";
 import { mapPlayerInformation } from "./mapper/gameInfoMapper";
 import { updatePlayerBoard } from "./updater/boardUpdater";
-import { updateButtonStatus, clearDisplay } from "./updater/gameInfoUpdater";
+import {
+  updateButtonStatus,
+  clearDisplay,
+  gameFormStatus,
+} from "./updater/gameInfoUpdater";
 import { pushToEventLog } from "./handler/notificationHandler";
 import { handlePlayerAction } from "./handler/playerActionHandler";
 import { handleStartButtonAction } from "./handler/buttonHandler";
 import Player from "./model/player";
 import Game from "./game";
+import Ship from "./model/ship";
 
 main();
 
 function main() {
-  handleStartButtonAction(() => {
+  gameFormStatus(true);
+  handleStartButtonAction((first, second, gameType) => {
     clearDisplay();
-    const test = new Player("tom", 10, true);
-    const test2 = new Player("jerry", 10, true);
-    test.addRandomShips(25);
-    test2.addRandomShips(25);
-    const game = new Game([test, test2]);
+    gameFormStatus(false);
+    const size = 10;
+    let p1 = new Player("Player 1", size);
+    let p2 = new Player("Player 2", size, true);
+
+    if (first != null && first != "") {
+      p1 = new Player(first, size);
+    }
+
+    if (second != null && second != "") {
+      p2 = new Player(second, size, true);
+    }
+
+    switch (gameType) {
+      case "PvC": {
+        p1 = new Player(p1.name, size);
+        p2 = new Player(p2.name, size, true);
+        break;
+      }
+      case "PvP": {
+        p1 = new Player(p1.name, size);
+        p2 = new Player(p2.name, size);
+        break;
+      }
+      case "CvC": {
+        p1 = new Player(p1.name, size, true);
+        p2 = new Player(p2.name, size, true);
+        break;
+      }
+    }
+
+    const game = new Game([p1, p2]);
     gameLoop(game);
   });
 }
@@ -27,14 +60,28 @@ function gameLoop(game) {
   game.startGame({
     preAction: (players, finish) => {
       pushToEventLog(`game is setting up...`);
-      for (let player of players) {
-        mapPlayerBoard(player, game.isPvP);
-        mapPlayerInformation(player);
-        let playerType = player.computer != null ? "CPU" : "Player";
-        pushToEventLog(
-          `${player.getFormatName()} enter the game as ${playerType}`
-        );
+      let ongoingSetup = true;
+      while (ongoingSetup) {
+        for (let player of players) {
+          if (player.computer != null) {
+            player.addRandomShips(25);
+            mapPlayerBoard(player, game.isPvP);
+          } else {
+            //pushToEventLog(`placing board...`);
+            //TODO place ship manually
+            player.addRandomShips(25);
+            mapPlayerBoard(player, game.isPvP);
+          }
+
+          mapPlayerInformation(player);
+          let playerType = player.computer != null ? "CPU" : "Player";
+          pushToEventLog(
+            `${player.getFormatName()} enter the game as ${playerType}`
+          );
+        }
+        ongoingSetup = false;
       }
+
       toggleBoardOverlay(players[0]);
       pushToEventLog(`game has started!`);
       updateButtonStatus(true);

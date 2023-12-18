@@ -17,3 +17,16 @@ export function updateButtonStatus(isOngoing) {
     startButton.disabled = false;
   }
 }
+
+export function gameFormStatus(isPreGame) {
+  const nameList = document.querySelector(".player-name-list");
+  const container = document.querySelector(".game-form-container");
+
+  if (isPreGame) {
+    nameList.style.display = "none";
+    container.style.display = "flex";
+  } else {
+    nameList.style.display = "flex";
+    container.style.display = "none";
+  }
+}
