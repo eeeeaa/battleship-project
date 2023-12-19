@@ -1,3 +1,20 @@
+/***
+ * Board placement steps:
+ * 1. create placement board
+ * 2. when click cell, store cell position to list
+ * 3. when list length is more than 5, exit loop and place ship in list
+ * 4. start the game
+ *
+ */
+
+export function mapPlacementBoard(player) {
+  const boardList = document.querySelector(".board-list");
+  const boardLabel = document.createElement("div");
+  boardLabel.classList.toggle("board-label");
+  boardLabel.textContent = player.getFormatName();
+  boardList.append(boardLabel, generatePlacementBoard(player));
+}
+
 export function generatePlacementBoard(player) {
   const size = player.board.size;
   let board = [];
@@ -12,8 +29,6 @@ export function generatePlacementBoard(player) {
   const boardElement = document.createElement("div");
   boardElement.setAttribute("data-player-name", player.name);
   boardElement.classList.toggle("game-board");
-
-  boardElement.append(overlay);
 
   boardElement.style.gridTemplate = `repeat(${size},1fr) / repeat(${size},1fr)`;
 

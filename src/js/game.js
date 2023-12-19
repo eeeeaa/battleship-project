@@ -42,12 +42,14 @@ export default class Game {
   };
 
   async startGame({
+    placementAction = null,
     preAction = null,
     playerAction,
     computerAction,
     postAction = null,
     delay = null,
   }) {
+    if (placementAction != null) await this.placementAction(placementAction);
     if (preAction != null) await this.preGameAction(preAction);
     while (!this.gameOver) {
       if (this.#turnQueue[0].computer != null) {
@@ -61,6 +63,14 @@ export default class Game {
     }
     if (postAction != null) await this.postGameAction(postAction);
   }
+
+  placementAction = (callback) => {
+    return new Promise((resolve, reject) => {
+      callback(this.#turnQueue, () => {
+        resolve();
+      });
+    });
+  };
 
   preGameAction = (callback) => {
     return new Promise((resolve, reject) => {

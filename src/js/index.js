@@ -5,22 +5,27 @@ import { updatePlayerBoard } from "./updater/boardUpdater";
 import {
   updateButtonStatus,
   clearDisplay,
-  gameFormStatus,
+  setGameDisplayState,
+  clearBoardList,
 } from "./updater/gameInfoUpdater";
 import { pushToEventLog } from "./handler/notificationHandler";
 import { handlePlayerAction } from "./handler/playerActionHandler";
 import { handleStartButtonAction } from "./handler/buttonHandler";
+import { mapPlacementBoard } from "./mapper/placementBoardMapper";
+import { updatePlacementBoard } from "./updater/placementBoardUpdater";
+import { handleShipPlacementAction } from "./handler/placementBoardHandler";
 import Player from "./model/player";
 import Game from "./game";
 import Ship from "./model/ship";
+import Gameboard from "./model/gameboard";
 
 main();
 
 function main() {
-  gameFormStatus(true);
+  setGameDisplayState("PRE_GAME");
   handleStartButtonAction((first, second, gameType) => {
     clearDisplay();
-    gameFormStatus(false);
+    setGameDisplayState("ONGOING");
     const size = 10;
     let p1 = new Player("Player 1", size);
     let p2 = new Player("Player 2", size, true);
@@ -58,28 +63,60 @@ function main() {
 
 function gameLoop(game) {
   game.startGame({
+    placementAction: (players, finish) => {
+      const SHIP_COUNT = 5;
+      pushToEventLog(`ship placement is setting up...`);
+      //setup placement
+      /*for (let player of players) {
+        if (player.computer != null) {
+          player.addRandomShips(SHIP_COUNT);
+        } else {
+          pushToEventLog(`placing board...`);
+          mapPlacementBoard(player);
+          handleShipPlacementAction(player, (cell) => {
+            let x = Number(cell.getAttribute("data-x"));
+            let y = Number(cell.getAttribute("data-y"));
+
+            let result = player.board.placeShip(new Ship(3), (x, y), true);
+
+            if (!result) {
+              pushToEventLog(
+                `${player.getFormatName()} failed to place ship at ${x},${y}`
+              );
+            } else {
+              pushToEventLog(
+                `${player.getFormatName()} place ship at ${x},${y} succesfully`
+              );
+            }
+            console.log(player.board.getString());
+          });
+        }
+      }*/
+
+      for (let player of players) {
+        player.addRandomShips(SHIP_COUNT);
+      }
+      finish();
+
+      /*if (
+        players.filter((player) => player.board.length >= SHIP_COUNT).length ===
+        2
+      ) {
+        finish();
+      }*/
+    },
     preAction: (players, finish) => {
       pushToEventLog(`game is setting up...`);
-      let ongoingSetup = true;
-      while (ongoingSetup) {
-        for (let player of players) {
-          if (player.computer != null) {
-            player.addRandomShips(25);
-            mapPlayerBoard(player, game.isPvP);
-          } else {
-            //pushToEventLog(`placing board...`);
-            //TODO place ship manually
-            player.addRandomShips(25);
-            mapPlayerBoard(player, game.isPvP);
-          }
+      //setup real board
+      clearBoardList();
 
-          mapPlayerInformation(player);
-          let playerType = player.computer != null ? "CPU" : "Player";
-          pushToEventLog(
-            `${player.getFormatName()} enter the game as ${playerType}`
-          );
-        }
-        ongoingSetup = false;
+      for (let player of players) {
+        mapPlayerBoard(player, game.isPvP);
+        mapPlayerInformation(player);
+        let playerType = player.computer != null ? "CPU" : "Player";
+        pushToEventLog(
+          `${player.getFormatName()} enter the game as ${playerType}`
+        );
       }
 
       toggleBoardOverlay(players[0]);

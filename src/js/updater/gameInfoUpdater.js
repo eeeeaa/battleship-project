@@ -8,6 +8,11 @@ export function clearDisplay() {
   eventLog.innerHTML = "";
 }
 
+export function clearBoardList() {
+  const boardList = document.querySelector(".board-list");
+  boardList.innerHTML = "";
+}
+
 export function updateButtonStatus(isOngoing) {
   const startButton = document.querySelector(".start-game-button");
 
@@ -18,7 +23,20 @@ export function updateButtonStatus(isOngoing) {
   }
 }
 
-export function gameFormStatus(isPreGame) {
+export function setGameDisplayState(state) {
+  switch (state) {
+    case "PRE_GAME": {
+      gameFormStatus(true);
+      break;
+    }
+
+    case "ONGOING": {
+      gameFormStatus(false);
+    }
+  }
+}
+
+function gameFormStatus(isPreGame) {
   const nameList = document.querySelector(".player-name-list");
   const container = document.querySelector(".game-form-container");
 
