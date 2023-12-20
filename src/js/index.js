@@ -18,6 +18,12 @@ import Gameboard from "./model/gameboard";
 
 main();
 
+/***
+ * Possible solution to placement
+ * - create a dummy board to take input
+ * - create a form and button to take inpu
+ */
+
 function main() {
   setGameDisplayState("PRE_GAME");
   handleStartButtonAction((first, second, gameType) => {
