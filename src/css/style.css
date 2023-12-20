@@ -41,8 +41,13 @@ body {
   gap: 2em;
 }
 
+.title {
+  font-size: x-large;
+  font-weight: 700;
+}
+
 .board-label {
-  color: black;
+  color: white;
   font-size: large;
   font-weight: 700;
   max-width: 100%;

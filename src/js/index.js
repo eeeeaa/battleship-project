@@ -67,7 +67,7 @@ function main() {
 function gameLoop(game) {
   game.startGame({
     placementAction: (players, finish) => {
-      const SHIP_COUNT = 5;
+      const SHIP_COUNT = 8;
       pushToEventLog(`ship placement is setting up...`);
       //setup placement
       for (let player of players) {
