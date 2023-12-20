@@ -11,9 +11,6 @@ import {
 import { pushToEventLog } from "./handler/notificationHandler";
 import { handlePlayerAction } from "./handler/playerActionHandler";
 import { handleStartButtonAction } from "./handler/buttonHandler";
-import { mapPlacementBoard } from "./mapper/placementBoardMapper";
-import { updatePlacementBoard } from "./updater/placementBoardUpdater";
-import { handleShipPlacementAction } from "./handler/placementBoardHandler";
 import Player from "./model/player";
 import Game from "./game";
 import Ship from "./model/ship";
@@ -67,43 +64,10 @@ function gameLoop(game) {
       const SHIP_COUNT = 5;
       pushToEventLog(`ship placement is setting up...`);
       //setup placement
-      /*for (let player of players) {
-        if (player.computer != null) {
-          player.addRandomShips(SHIP_COUNT);
-        } else {
-          pushToEventLog(`placing board...`);
-          mapPlacementBoard(player);
-          handleShipPlacementAction(player, (cell) => {
-            let x = Number(cell.getAttribute("data-x"));
-            let y = Number(cell.getAttribute("data-y"));
-
-            let result = player.board.placeShip(new Ship(3), (x, y), true);
-
-            if (!result) {
-              pushToEventLog(
-                `${player.getFormatName()} failed to place ship at ${x},${y}`
-              );
-            } else {
-              pushToEventLog(
-                `${player.getFormatName()} place ship at ${x},${y} succesfully`
-              );
-            }
-            console.log(player.board.getString());
-          });
-        }
-      }*/
-
       for (let player of players) {
         player.addRandomShips(SHIP_COUNT);
       }
       finish();
-
-      /*if (
-        players.filter((player) => player.board.length >= SHIP_COUNT).length ===
-        2
-      ) {
-        finish();
-      }*/
     },
     preAction: (players, finish) => {
       pushToEventLog(`game is setting up...`);

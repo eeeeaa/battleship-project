@@ -10,7 +10,7 @@ body {
 }
 
 body {
-  background-color: bisque;
+  background-color: #27272a;
 }
 
 #main-content {
@@ -29,7 +29,7 @@ body {
   display: grid;
   grid-template: auto / 2fr 1fr;
   align-items: center;
-  background-color: azure;
+  background-color: #334155;
 }
 
 #main-content .game-space .board-list {
@@ -78,8 +78,7 @@ body {
   grid-template-rows: 2fr 1fr 3fr;
   gap: 0.5em;
   border-radius: 0 1em 1em 0;
-  border: 1px solid black;
-  background-color: black;
+  background-color: #18181b;
 }
 
 .game-information .player-name-list {
